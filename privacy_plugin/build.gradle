@@ -1,0 +1,33 @@
+plugins {
+    id 'java-library'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'maven-publish'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+dependencies {
+    implementation gradleApi()
+    implementation("com.android.tools.build:gradle-api:7.2.1")
+    compileOnly("org.ow2.asm:asm-commons:9.2")
+//    compileOnly("org.ow2.asm:asm-tree:9.2")
+    implementation project(':privacy_api')
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.java
+
+                // You can then customize attributes of the publication as shown below.
+                groupId = 'com.peach.privacy'
+                artifactId = 'plugin'
+                version = '1.0.0'
+            }
+        }
+    }
+}
