@@ -3,6 +3,7 @@ package com.example.app1
 import android.accounts.Account
 import android.accounts.AccountManager
 import android.os.Bundle
+import android.telephony.TelephonyManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,11 +21,22 @@ class MainActivity : ComponentActivity() {
         setContent {
             App1Theme {
                 // A surface container using the 'background' color from the theme
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colors.background
+                ) {
                     Greeting("Android")
                 }
             }
         }
+        TTT().privacyMethod(
+            this, null,
+            getSystemService(TELEPHONY_SERVICE) as TelephonyManager,
+            null,
+            null,
+            packageManager,
+            null,null,null
+        )
     }
 
 }

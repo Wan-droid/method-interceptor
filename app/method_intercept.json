@@ -1,0 +1,149 @@
+[
+  {
+    "ownerClassName": "android/accounts/AccountManager",
+    "methods": [
+      {
+        "name": "getAccounts",
+        "descriptor": "()[Landroid/accounts/Account;",
+        "intercept": true
+      },
+      {
+        "name": "getAccountsByType",
+        "descriptor": "(Ljava/lang/String;)[Landroid/accounts/Account;",
+        "intercept": true
+      }
+    ]
+  },
+  {
+    "ownerClassName": "android/bluetooth/le/BluetoothLeScanner",
+    "methods": [
+      {
+        "name": "startScan",
+        "descriptor": "(Landroid/bluetooth/le/ScanCallback;)V",
+        "intercept": false
+      }
+    ]
+  },
+  {
+    "ownerClassName": "android/telephony/TelephonyManager",
+    "methods": [
+      {
+        "name": "getDeviceId",
+        "intercept": true
+      },
+      {
+        "name": "getImei",
+        "intercept": true
+      },
+      {
+        "name": "getSubscriberId",
+        "intercept": false
+      },
+      {
+        "name": "getSimSerialNumber",
+        "intercept": false
+      },
+      {
+        "name": "getLine1Number",
+        "intercept": false
+      },
+      {
+        "name": "getNetworkOperator",
+        "intercept": false
+      },
+      {
+        "name": "getSimCountryIso",
+        "intercept": false
+      },
+      {
+        "name": "getAllCellInfo",
+        "descriptor": "()Ljava/util/List;",
+        "intercept": false
+      },
+      {
+        "name": "getCellLocation",
+        "descriptor": "()Landroid/telephony/CellLocation;",
+        "intercept": false
+      }
+    ]
+  },
+  {
+    "ownerClassName": "android/location/LocationManager",
+    "methods": [
+      {
+        "name": "requestLocationUpdates",
+        "intercept": false
+      }
+    ]
+  },
+  {
+    "ownerClassName": "android/content/pm/PackageManager",
+    "methods": [
+      {
+        "name": "getInstalledApplications",
+        "descriptor": "(I)Ljava/util/List;",
+        "intercept": false
+      },
+      {
+        "name": "getInstalledPackages",
+        "descriptor": "(I)Ljava/util/List;",
+        "intercept": false
+      }
+    ]
+  },
+  {
+    "ownerClassName": "android/net/wifi/WifiInfo",
+    "methods": [
+      {
+        "name": "getMacAddress",
+        "descriptor": "()Ljava/lang/String;",
+        "intercept": false
+      },
+      {
+        "name": "getSSID",
+        "intercept": false
+      },
+      {
+        "name": "getBSSID",
+        "intercept": false
+      },
+      {
+        "name": "getScanResults",
+        "intercept": false
+      },
+      {
+        "name": "getConnectionInfo",
+        "intercept": false
+      }
+    ]
+  },
+  {
+    "ownerClassName": "com/bun/miitmdid/interfaces/IdSupplier",
+    "methods": [
+      {
+        "name": "getOAID",
+        "descriptor": "()Ljava/lang/String;",
+        "intercept": false
+      }
+    ]
+  },
+  {
+    "ownerClassName": "android/hardware/SensorManager",
+    "methods": [
+      {
+        "name": "registerListener",
+        "intercept": false
+      }
+    ]
+  },
+  {
+    "ownerClassName": "android/provider/Settings$Secure",
+    "methods": [
+      {
+        "name": "getString",
+        "descriptor": "(Landroid/content/ContentResolver;Ljava/lang/String;)Ljava/lang/String;",
+        "intercept": true
+      }
+    ]
+  }
+]

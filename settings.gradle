@@ -15,7 +15,5 @@ dependencyResolutionManagement {
         mavenLocal()
     }
 }
-rootProject.name = "app1"
 include ':app'
-include ':privacy_api'
 include ':privacy_plugin'

@@ -1,23 +1,21 @@
 package com.peach.privacy.plugin
 
-class Method(val ownerClassName: String) {
+import java.io.Serializable
+
+data class Method(val ownerClassName: String) :Serializable{
 
     private val methods = mutableListOf<MethodDescriptor>()
 
-
-    fun addBanMethod(descriptor: MethodDescriptor) {
-        methods.add(descriptor)
-    }
-
-    fun removeBanMethod(descriptor: MethodDescriptor) {
-        methods.remove(descriptor)
+    fun intercept(name: String?, descriptor: String?): Boolean {
+        if (name == null) return false
+        val none =
+            methods.none { it.name == name && (it.descriptor == null || it.descriptor == descriptor) && it.intercept }
+        return !none
     }
 }
 
-class MethodDescriptor(val name: String, val descriptor: String?=null)
-
-fun Method.dot(methodName: String, descriptor:String? = null) {
-    val methodDescriptor = MethodDescriptor(methodName, descriptor)
-    addBanMethod(methodDescriptor)
-
-}
+data class MethodDescriptor(
+    val name: String,
+    val descriptor: String? = null,
+    val intercept: Boolean = false
+)
