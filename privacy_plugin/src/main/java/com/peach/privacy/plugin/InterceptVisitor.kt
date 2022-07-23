@@ -14,6 +14,7 @@ const val INTERCEPTOR_CLASS_SUFFIX = "intercept"
 class InterceptClassVisitor(
     private val methods: MutableList<Method>,
     private val logFile: File,
+    private val packageSuffix: String,
     classVisitor: ClassVisitor
 ) :
     ClassVisitor(Opcodes.ASM5, classVisitor) {
@@ -32,7 +33,7 @@ class InterceptClassVisitor(
         exceptions: Array<out String>?
     ): MethodVisitor {
         val mv = super.visitMethod(access, name, descriptor, signature, exceptions)
-        return InterceptMethodVisitor(curSource, methods, logFile, mv)
+        return InterceptMethodVisitor(curSource, methods, logFile, packageSuffix, mv)
     }
 }
 
@@ -40,6 +41,7 @@ class InterceptMethodVisitor(
     private val source: String?,
     private val methods: MutableList<Method>,
     private val logFile: File,
+    private val packageSuffix: String,
     methodVisitor: MethodVisitor
 ) :
     MethodVisitor(Opcodes.ASM5, methodVisitor) {
@@ -73,7 +75,7 @@ class InterceptMethodVisitor(
                             val substring = descriptor.substring(1)
                             mv.visitMethodInsn(
                                 Opcodes.INVOKESTATIC,
-                                "${INTERCEPTOR_CLASS_SUFFIX}/${owner}",
+                                "${packageSuffix}/${owner}",
                                 name,
                                 "(L$owner;$substring",
                                 false
@@ -82,7 +84,7 @@ class InterceptMethodVisitor(
                         Opcodes.INVOKESTATIC -> {
                             mv.visitMethodInsn(
                                 Opcodes.INVOKESTATIC,
-                                "${INTERCEPTOR_CLASS_SUFFIX}/${owner}",
+                                "${packageSuffix}/${owner}",
                                 name,
                                 descriptor,
                                 false

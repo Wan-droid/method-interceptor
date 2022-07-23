@@ -5,6 +5,7 @@ import com.android.build.api.variant.AndroidComponentsExtension
 import com.peach.privacy.plugin.PrivacyPlugin.Companion.RECORD_FILE_NAME
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.objectweb.asm.ClassVisitor
@@ -23,6 +24,8 @@ class PrivacyPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         val androidComponents = project.extensions.getByType(AndroidComponentsExtension::class.java)
 
+        val extension =
+            project.extensions.create("methodIntercept", MethodInterceptExtension::class.java)
         val file = project.file(INTERCEPT_FILE_NAME)
 
         val logsDir = File(project.buildDir, "outputs/logs")
@@ -43,12 +46,20 @@ class PrivacyPlugin : Plugin<Project> {
                     }
                 }
                 param.outputLogDir.set(outputDir)
+                param.blackList.set(extension.blackList)
+                param.packageSuffix.set(extension.packageSuffix)
             }
 
             it.instrumentation.setAsmFramesComputationMode(FramesComputationMode.COMPUTE_FRAMES_FOR_INSTRUMENTED_METHODS)
 
         }
     }
+}
+
+open class MethodInterceptExtension {
+    var packageSuffix: String = INTERCEPTOR_CLASS_SUFFIX
+
+    var blackList: MutableList<String> = mutableListOf()
 }
 
 
@@ -58,6 +69,12 @@ interface PrivacyParam : InstrumentationParameters {
 
     @get:Input
     val outputLogDir: Property<File>
+
+    @get:Input
+    val packageSuffix: Property<String>
+
+    @get:Input
+    val blackList: ListProperty<String>
 }
 
 abstract class InterceptorClassVisitorFactory : AsmClassVisitorFactory<PrivacyParam> {
@@ -78,12 +95,34 @@ abstract class InterceptorClassVisitorFactory : AsmClassVisitorFactory<PrivacyPa
         if (!outputLogFile.exists()) {
             outputLogFile.createNewFile()
         }
-        return InterceptClassVisitor(data.intercept, outputLogFile, nextClassVisitor)
+        return InterceptClassVisitor(
+            data.intercept,
+            outputLogFile,
+            param.packageSuffix.get(),
+            nextClassVisitor
+        )
     }
 
     override fun isInstrumentable(classData: ClassData): Boolean {
-        if (classData.className.startsWith("intercept")) {
+        val param = parameters.get()
+        val suffix = param.packageSuffix.get()
+        if (classData.className.startsWith(suffix)) {
             return false
+        }
+        val blackList = param.blackList.get()
+        blackList.forEach {
+            if (it.endsWith(".*")) {
+                val substring = it.substring(0, it.length - 2)
+                if (classData.className.startsWith(substring)) {
+                    return false
+                }
+            }
+            val lastIndexOf = classData.className.lastIndexOf(".")
+            val packageName = classData.className.substring(0, lastIndexOf)
+            println(packageName)
+            if (packageName == it) {
+                return false
+            }
         }
         return true
     }
