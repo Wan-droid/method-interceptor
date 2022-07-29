@@ -9,24 +9,25 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-dependencies {
-    implementation gradleApi()
-    implementation("com.android.tools.build:gradle-api:7.2.1")
-    compileOnly("org.ow2.asm:asm-commons:9.2")
-    implementation 'org.yaml:snakeyaml:1.30'
-    implementation 'com.google.code.gson:gson:2.8.9'
+task sourcesJar(type: Jar, dependsOn: classes) {
+    archiveClassifier.set('source')
+    from sourceSets.main.allSource
 }
+
+dependencies {
+    compileOnly("org.ow2.asm:asm-commons:9.2")
+}
+
 
 afterEvaluate {
     publishing {
         publications {
             release(MavenPublication) {
                 from components.java
-
-                // You can then customize attributes of the publication as shown below.
-                groupId = 'com.peach.privacy'
-                artifactId = 'plugin'
-                version = '1.0.0'
+                artifact sourcesJar
+                group rootProject.group
+                artifactId = 'transform'
+                version rootProject.version
             }
         }
     }

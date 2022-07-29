@@ -2,7 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
 }
-apply plugin:'com.peach.privacy'
+apply plugin:'com.method.intercept'
 
 android {
     compileSdk 32

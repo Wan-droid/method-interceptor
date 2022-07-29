@@ -16,4 +16,7 @@ dependencyResolutionManagement {
     }
 }
 include ':app'
-include ':privacy_plugin'
+include ':plugin'
+include ':plugin_compat_v4'
+include ':transform'
+

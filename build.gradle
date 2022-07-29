@@ -3,7 +3,7 @@ buildscript {
         compose_version = '1.1.0'
     }
     dependencies {
-        classpath "com.peach.privacy:plugin:1.0.0"
+        classpath "com.method.intercept:plugin:1.0.0"
     }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
@@ -13,6 +13,10 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.6.10' apply false
 }
 
+
+group = 'com.method.intercept'
+
+version = '1.0.0'
 
 task clean(type: Delete) {
     delete rootProject.buildDir

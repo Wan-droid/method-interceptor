@@ -1,4 +1,4 @@
-package com.peach.privacy.plugin
+package com.method.intercept.plugin
 
 class Intercept {
     var intercept = mutableListOf<Method>()
@@ -15,7 +15,7 @@ class MethodDescriptor {
     var intercept: Boolean = false
 }
 
-enum class InterceptState {
+internal enum class InterceptState {
     IGNORE, NO_INTERCEPT, INTERCEPT
 }
 

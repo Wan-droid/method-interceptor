@@ -33,8 +33,10 @@ intercept:
     methods:
       - name: getInstalledApplications
         descriptor: "(I)Ljava/util/List;"
+        intercept: true
       - name: getInstalledPackages
         descriptor: "(I)Ljava/util/List;"
+        intercept: true
   - ownerClassName: android/net/wifi/WifiInfo
     methods:
       - name: getMacAddress

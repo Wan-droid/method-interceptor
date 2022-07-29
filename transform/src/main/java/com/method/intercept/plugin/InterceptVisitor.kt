@@ -1,4 +1,4 @@
-package com.peach.privacy.plugin
+package com.method.intercept.plugin
 
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.Label
@@ -8,16 +8,14 @@ import java.io.File
 import java.nio.charset.Charset
 
 
-const val INTERCEPTOR_CLASS_SUFFIX = "intercept"
 
-
-class InterceptClassVisitor(
+internal class InterceptClassVisitor(
     private val methods: MutableList<Method>,
     private val logFile: File,
-    private val packageSuffix: String,
+    private val packagePrefix: String,
     classVisitor: ClassVisitor
 ) :
-    ClassVisitor(Opcodes.ASM5, classVisitor) {
+    ClassVisitor(Opcodes.ASM6, classVisitor) {
     private var curSource: String? = null
 
     override fun visitSource(source: String?, debug: String?) {
@@ -33,18 +31,18 @@ class InterceptClassVisitor(
         exceptions: Array<out String>?
     ): MethodVisitor {
         val mv = super.visitMethod(access, name, descriptor, signature, exceptions)
-        return InterceptMethodVisitor(curSource, methods, logFile, packageSuffix, mv)
+        return InterceptMethodVisitor(curSource, methods, logFile, packagePrefix, mv)
     }
 }
 
-class InterceptMethodVisitor(
+internal class InterceptMethodVisitor(
     private val source: String?,
     private val methods: MutableList<Method>,
     private val logFile: File,
-    private val packageSuffix: String,
+    private val packagePrefix: String,
     methodVisitor: MethodVisitor
 ) :
-    MethodVisitor(Opcodes.ASM5, methodVisitor) {
+    MethodVisitor(Opcodes.ASM6, methodVisitor) {
 
     private var curLine = 0
 
@@ -75,7 +73,7 @@ class InterceptMethodVisitor(
                             val substring = descriptor.substring(1)
                             mv.visitMethodInsn(
                                 Opcodes.INVOKESTATIC,
-                                "${packageSuffix}/${owner}",
+                                "${packagePrefix}/${owner}",
                                 name,
                                 "(L$owner;$substring",
                                 false
@@ -84,7 +82,7 @@ class InterceptMethodVisitor(
                         Opcodes.INVOKESTATIC -> {
                             mv.visitMethodInsn(
                                 Opcodes.INVOKESTATIC,
-                                "${packageSuffix}/${owner}",
+                                "${packagePrefix}/${owner}",
                                 name,
                                 descriptor,
                                 false
