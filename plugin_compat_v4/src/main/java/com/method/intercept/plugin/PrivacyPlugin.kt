@@ -15,7 +15,6 @@ class PrivacyPlugin : Plugin<Project> {
 
         val outputDir = File(project.buildDir, "outputs/logs")
 
-        println(extension.packagePrefix)
-        androidComponents.registerTransform(MethodInterceptTransform(file, outputDir, extension.packagePrefix))
+        androidComponents.registerTransform(MethodInterceptTransform(file, outputDir, extension))
     }
 }

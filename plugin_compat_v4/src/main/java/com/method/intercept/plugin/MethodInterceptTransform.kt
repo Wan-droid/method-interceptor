@@ -16,7 +16,7 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import java.util.zip.ZipOutputStream
 
-class MethodInterceptTransform(configFile: File, outputDir: File, private val packagePrefix: String) : Transform() {
+class MethodInterceptTransform(configFile: File, outputDir: File, private val extension: MethodInterceptExtension) : Transform() {
     private val intercept: Intercept
     private val outputLogFile = File(outputDir, RECORD_FILE_NAME)
 
@@ -64,9 +64,11 @@ class MethodInterceptTransform(configFile: File, outputDir: File, private val pa
             }
             input.directoryInputs.forEach { dir ->
                 val inputDir = dir.file
+                println("dir:" + inputDir.name)
                 val outputDir = outputProvider.getContentLocation(dir.name, dir.contentTypes, dir.scopes, Format.DIRECTORY)
                 if (invocation.isIncremental) {
                     for ((inputFile, status) in dir.changedFiles.entries) {
+                        println(inputFile.name)
                         when (status!!) {
                             Status.NOTCHANGED -> {}
                             Status.ADDED, Status.CHANGED -> if (!inputFile.isDirectory && inputFile.name.endsWith(SdkConstants.DOT_CLASS)) {
@@ -84,7 +86,19 @@ class MethodInterceptTransform(configFile: File, outputDir: File, private val pa
                         .filter { it!!.name.endsWith(SdkConstants.DOT_CLASS) }
                         .forEach { file ->
                             val out = toOutputFile(outputDir, inputDir, file)
-                            handleDir(file, out)
+                            if (file.name.endsWith(SdkConstants.DOT_CLASS)) {
+                                val relativePath = FileUtils.relativePossiblyNonExistingPath(file, inputDir)
+                                val classFileName = relativePath.replace(File.separator, ".")
+                                val className = classFileName.substring(0, classFileName.length - 6)
+                                val needTransform = needTransform(className, extension.packagePrefix, extension.blackList)
+                                if (needTransform) {
+                                    handleDir(file, out)
+                                } else {
+                                    FileUtils.copyFile(file, out)
+                                }
+                            } else {
+                                FileUtils.copyFile(file, out)
+                            }
                         }
                 }
             }
@@ -103,9 +117,11 @@ class MethodInterceptTransform(configFile: File, outputDir: File, private val pa
                 val entry: ZipEntry = inEntries.nextElement()
                 val originalFile = BufferedInputStream(inputZip.getInputStream(entry))
                 val outEntry = ZipEntry(entry.name)
-                val className = outEntry.name.replace("/", ".")
-                val newEntryContent = if (className.endsWith(".class")) {
-                    internalTransform(originalFile)
+                val fileName = outEntry.name.replace("/", ".")
+                val newEntryContent = if (fileName.endsWith(".class")) {
+                    val className = fileName.substring(0, fileName.length - 6)
+                    val needTransform = needTransform(className, extension.packagePrefix, extension.blackList)
+                    if (needTransform) internalTransform(originalFile) else IOUtils.toByteArray(originalFile)
                 } else {
                     IOUtils.toByteArray(originalFile)
                 }
@@ -142,7 +158,7 @@ class MethodInterceptTransform(configFile: File, outputDir: File, private val pa
     private fun internalTransform(inputStream: InputStream): ByteArray {
         val classReader = ClassReader(inputStream)
         val classWriter = ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
-        val visitor = createClassVisitor(intercept.intercept, outputLogFile, packagePrefix, classWriter)
+        val visitor = createClassVisitor(intercept.intercept, outputLogFile, extension.packagePrefix, classWriter)
         classReader.accept(visitor, 0)
         return classWriter.toByteArray()
     }
@@ -150,7 +166,7 @@ class MethodInterceptTransform(configFile: File, outputDir: File, private val pa
     private fun internalTransform(inputStream: InputStream, outputStream: OutputStream) {
         val classReader = ClassReader(inputStream)
         val classWriter = ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
-        val visitor = createClassVisitor(intercept.intercept, outputLogFile, packagePrefix, classWriter)
+        val visitor = createClassVisitor(intercept.intercept, outputLogFile, extension.packagePrefix, classWriter)
         classReader.accept(visitor, ClassReader.SKIP_FRAMES)
         val bytes = classWriter.toByteArray()
         outputStream.write(bytes)

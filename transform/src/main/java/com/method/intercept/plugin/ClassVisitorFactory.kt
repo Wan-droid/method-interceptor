@@ -12,3 +12,27 @@ fun createClassVisitor(
 ): ClassVisitor {
     return InterceptClassVisitor(methods, logFile, packagePrefix, classVisitor)
 }
+
+fun needTransform(
+    className: String,
+    packagePrefix: String, blackList: MutableList<String>
+): Boolean {
+    println("0-0-$className")
+    if (className.startsWith(packagePrefix)) {
+        return false
+    }
+    blackList.forEach {
+        if (it.endsWith(".*")) {
+            val substring = it.substring(0, it.length - 2)
+            if (className.startsWith(substring)) {
+                return false
+            }
+        }
+        val lastIndexOf = className.lastIndexOf(".")
+        val packageName = className.substring(0, lastIndexOf)
+        if (packageName == it) {
+            return false
+        }
+    }
+    return true
+}

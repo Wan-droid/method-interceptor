@@ -64,6 +64,7 @@ internal class InterceptMethodVisitor(
         } else {
             when (banMethods.intercept(name, descriptor)) {
                 InterceptState.INTERCEPT -> {
+                    val prefix = packagePrefix.replace(".", "/")
                     logFile.appendText(
                         "intercept:$source:$curLine->$owner.$name$descriptor $isInterface\n",
                         Charset.forName("utf-8")
@@ -73,7 +74,7 @@ internal class InterceptMethodVisitor(
                             val substring = descriptor.substring(1)
                             mv.visitMethodInsn(
                                 Opcodes.INVOKESTATIC,
-                                "${packagePrefix}/${owner}",
+                                "${prefix}/${owner}",
                                 name,
                                 "(L$owner;$substring",
                                 false
@@ -82,7 +83,7 @@ internal class InterceptMethodVisitor(
                         Opcodes.INVOKESTATIC -> {
                             mv.visitMethodInsn(
                                 Opcodes.INVOKESTATIC,
-                                "${packagePrefix}/${owner}",
+                                "${prefix}/${owner}",
                                 name,
                                 descriptor,
                                 false

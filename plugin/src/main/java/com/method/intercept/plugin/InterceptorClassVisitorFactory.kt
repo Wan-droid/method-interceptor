@@ -37,24 +37,7 @@ abstract class InterceptorClassVisitorFactory : AsmClassVisitorFactory<MethodInt
     override fun isInstrumentable(classData: ClassData): Boolean {
         val param = parameters.get()
         val prefix = param.packagePrefix.get()
-        if (classData.className.startsWith(prefix)) {
-            return false
-        }
         val blackList = param.blackList.get()
-        blackList.forEach {
-            if (it.endsWith(".*")) {
-                val substring = it.substring(0, it.length - 2)
-                if (classData.className.startsWith(substring)) {
-                    return false
-                }
-            }
-            val lastIndexOf = classData.className.lastIndexOf(".")
-            val packageName = classData.className.substring(0, lastIndexOf)
-            println(packageName)
-            if (packageName == it) {
-                return false
-            }
-        }
-        return true
+        return needTransform(classData.className, prefix, blackList)
     }
 }
