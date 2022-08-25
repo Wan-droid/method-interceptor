@@ -1,4 +1,4 @@
-package com.method.intercept.plugin
+package io.github.wandroid.method.intercept
 
 
 const val DEFAULT_INTERCEPTOR_CLASS_PREFIX = "intercept"

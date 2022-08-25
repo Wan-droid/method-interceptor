@@ -1,4 +1,4 @@
-package com.method.intercept.plugin
+package io.github.wandroid.method.intercept
 
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.Label

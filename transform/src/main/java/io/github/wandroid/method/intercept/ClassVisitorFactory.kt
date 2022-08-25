@@ -1,4 +1,4 @@
-package com.method.intercept.plugin
+package io.github.wandroid.method.intercept
 
 import org.objectweb.asm.ClassVisitor
 import java.io.File
@@ -17,7 +17,6 @@ fun needTransform(
     className: String,
     packagePrefix: String, blackList: MutableList<String>
 ): Boolean {
-    println("0-0-$className")
     if (className.startsWith(packagePrefix)) {
         return false
     }

@@ -1,4 +1,4 @@
-package com.method.intercept.plugin
+package io.github.wandroid.method.intercept
 
 import com.android.SdkConstants
 import com.android.build.api.transform.*

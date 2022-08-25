@@ -10,15 +10,18 @@
 
 1. 第一步，加入classpath
     ```groovy
+    repositories {
+        mavenCentral()
+    }
     buildscript {
         dependencies {
-            classpath "com.method.intercept:plugin:1.0.0"
+            classpath "io.github.wandroid:method-intercept-plugin:1.0.0"
         }
     }
     ```
 2. 第二步，在app的build.gradle下应用插件
     ```groovy
-    apply plugin:'com.method.intercept'
+    apply plugin:'method-intercept'
     ```
 
 3. 第三步，写拦截配置

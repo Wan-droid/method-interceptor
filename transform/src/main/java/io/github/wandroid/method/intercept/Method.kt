@@ -1,4 +1,4 @@
-package com.method.intercept.plugin
+package io.github.wandroid.method.intercept
 
 class Intercept {
     var intercept = mutableListOf<Method>()

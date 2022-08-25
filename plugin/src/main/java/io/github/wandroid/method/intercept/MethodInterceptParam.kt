@@ -1,4 +1,4 @@
-package com.method.intercept.plugin
+package io.github.wandroid.method.intercept
 
 import com.android.build.api.instrumentation.InstrumentationParameters
 import org.gradle.api.provider.ListProperty
