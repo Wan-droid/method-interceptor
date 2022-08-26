@@ -15,7 +15,9 @@
     }
     buildscript {
         dependencies {
-            classpath "io.github.wandroid:method-intercept-plugin:1.0.0"
+            classpath "io.github.wan-droid:method-intercept-plugin:1.0.0"
+            //AGP4.0以下使用这一个
+            classpath "io.github.wan-droid:method-intercept-plugin-compat:1.0.0"
         }
     }
     ```

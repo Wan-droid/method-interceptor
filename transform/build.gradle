@@ -1,34 +1,14 @@
 plugins {
     id 'java-library'
     id 'org.jetbrains.kotlin.jvm'
-    id 'maven-publish'
 }
+apply plugin: "com.vanniktech.maven.publish"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    archiveClassifier.set('source')
-    from sourceSets.main.allSource
-}
-
 dependencies {
     compileOnly("org.ow2.asm:asm-commons:9.2")
-}
-
-
-afterEvaluate {
-    publishing {
-        publications {
-            release(MavenPublication) {
-                from components.java
-                artifact sourcesJar
-                group rootProject.group
-                artifactId = 'transform'
-                version rootProject.version
-            }
-        }
-    }
 }
