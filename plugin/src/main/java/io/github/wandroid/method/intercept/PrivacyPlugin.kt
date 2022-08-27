@@ -23,7 +23,7 @@ class PrivacyPlugin : Plugin<Project> {
             val buildType = it.buildType
             val child = if (flavorName.isNullOrEmpty()) buildType else "$buildType/$flavorName"
             val outputDir = if (child.isNullOrEmpty()) logsDir else File(logsDir, child)
-            it.instrumentation.transformClassesWith(
+            it.transformClassesWith(
                 InterceptorClassVisitorFactory::class.java,
                 InstrumentationScope.ALL
             ) { param ->
@@ -39,7 +39,7 @@ class PrivacyPlugin : Plugin<Project> {
                 param.packagePrefix.set(extension.packagePrefix)
             }
 
-            it.instrumentation.setAsmFramesComputationMode(FramesComputationMode.COMPUTE_FRAMES_FOR_INSTRUMENTED_METHODS)
+            it.setAsmFramesComputationMode(FramesComputationMode.COMPUTE_FRAMES_FOR_INSTRUMENTED_METHODS)
 
         }
     }

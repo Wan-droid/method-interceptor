@@ -64,16 +64,14 @@ class MethodInterceptTransform(configFile: File, outputDir: File, private val ex
             }
             input.directoryInputs.forEach { dir ->
                 val inputDir = dir.file
-                println("dir:" + inputDir.name)
                 val outputDir = outputProvider.getContentLocation(dir.name, dir.contentTypes, dir.scopes, Format.DIRECTORY)
                 if (invocation.isIncremental) {
                     for ((inputFile, status) in dir.changedFiles.entries) {
-                        println(inputFile.name)
                         when (status!!) {
                             Status.NOTCHANGED -> {}
                             Status.ADDED, Status.CHANGED -> if (!inputFile.isDirectory && inputFile.name.endsWith(SdkConstants.DOT_CLASS)) {
                                 val out = toOutputFile(outputDir, inputDir, inputFile)
-                                handleDir(inputDir, out)
+                                handleDir(inputFile, out)
                             }
                             Status.REMOVED -> {
                                 val outputFile = toOutputFile(outputDir, inputDir, inputFile)
@@ -86,6 +84,7 @@ class MethodInterceptTransform(configFile: File, outputDir: File, private val ex
                         .filter { it!!.name.endsWith(SdkConstants.DOT_CLASS) }
                         .forEach { file ->
                             val out = toOutputFile(outputDir, inputDir, file)
+                            Files.createParentDirs(out)
                             if (file.name.endsWith(SdkConstants.DOT_CLASS)) {
                                 val relativePath = FileUtils.relativePossiblyNonExistingPath(file, inputDir)
                                 val classFileName = relativePath.replace(File.separator, ".")
@@ -146,7 +145,7 @@ class MethodInterceptTransform(configFile: File, outputDir: File, private val ex
     }
 
     private fun handleDir(inputFile: File, outputFile: File) {
-        Files.createParentDirs(outputFile)
+        println(inputFile.absolutePath)
         FileInputStream(inputFile).use { fis ->
             FileOutputStream(outputFile).use { fos ->
                 //transform

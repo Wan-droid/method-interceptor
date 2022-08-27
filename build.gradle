@@ -1,23 +1,32 @@
 buildscript {
     ext {
         compose_version = '1.1.0'
+        kotlin_version = '1.6.10'
+    }
+    repositories {
+        google()
+        mavenCentral()
+        mavenLocal()
     }
     dependencies {
+        classpath 'com.android.tools.build:gradle:7.2.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlin_version"
+
         classpath 'com.vanniktech:gradle-maven-publish-plugin:0.18.0'
-        classpath "io.github.wan-droid:method-intercept-plugin:1.0.1"
+        classpath "io.github.wan-droid:method-intercept-plugin:0.0.1"
     }
-}// Top-level build file where you can add configuration options common to all sub-projects/modules.
-plugins {
-    id 'com.android.application' version '7.2.1' apply false
-    id 'com.android.library' version '7.2.1' apply false
-    id 'org.jetbrains.kotlin.android' version '1.6.10' apply false
-    id 'org.jetbrains.kotlin.jvm' version '1.6.10' apply false
 }
 
 
-group = 'com.method.intercept'
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        mavenLocal()
+    }
+}
 
-version = '1.0.0'
 
 task clean(type: Delete) {
     delete rootProject.buildDir
